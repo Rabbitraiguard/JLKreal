@@ -72,31 +72,37 @@
                             
                             <!-- ข้อมูลบริษัท -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div class="form-group">
                                     <label for="companyName" class="form-label">
                                         ชื่อบริษัท *
                                     </label>
                                     <input
                                         id="companyName"
                                         name="companyName"
-                                        class="form-input"
+                                        type="text"
+                                        class="form-input mobile-full-width"
                                         placeholder="กรอกชื่อบริษัท"
+                                        autocomplete="organization"
+                                        inputmode="text"
                                         required
                                     />
                                 </div>
-                                <div>
+                                <div class="form-group">
                                     <label for="contactName" class="form-label">
                                         ชื่อผู้ติดต่อ *
                                     </label>
                                     <input
                                         id="contactName"
                                         name="contactName"
-                                        class="form-input"
+                                        type="text"
+                                        class="form-input mobile-full-width"
                                         placeholder="กรอกชื่อผู้ติดต่อ"
+                                        autocomplete="name"
+                                        inputmode="text"
                                         required
                                     />
                                 </div>
-                                <div>
+                                <div class="form-group">
                                     <label for="email" class="form-label">
                                         อีเมล *
                                     </label>
@@ -104,20 +110,25 @@
                                         id="email"
                                         name="email"
                                         type="email"
-                                        class="form-input"
+                                        class="form-input mobile-full-width"
                                         placeholder="กรอกอีเมล"
+                                        autocomplete="email"
+                                        inputmode="email"
                                         required
                                     />
                                 </div>
-                                <div>
+                                <div class="form-group">
                                     <label for="phone" class="form-label">
                                         เบอร์โทรศัพท์ *
                                     </label>
                                     <input
                                         id="phone"
                                         name="phone"
-                                        class="form-input"
+                                        type="tel"
+                                        class="form-input mobile-full-width"
                                         placeholder="กรอกเบอร์โทรศัพท์"
+                                        autocomplete="tel"
+                                        inputmode="tel"
                                         required
                                     />
                                 </div>
@@ -128,11 +139,11 @@
                                 <h3 class="text-lg font-semibold mb-4">ข้อมูลบริการ</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
+                                    <div class="form-group">
                                         <label for="serviceType" class="form-label">
                                             ประเภทบริการ *
                                         </label>
-                                        <select id="serviceType" name="serviceType" class="form-select" required>
+                                        <select id="serviceType" name="serviceType" class="form-select mobile-full-width" required>
                                             <option value="">เลือกประเภทบริการ</option>
                                             <option value="export">บริการส่งออก</option>
                                             <option value="import">บริการนำเข้า</option>
@@ -142,11 +153,11 @@
                                             <option value="other">อื่นๆ</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div class="form-group">
                                         <label for="urgency" class="form-label">
                                             ความเร่งด่วน
                                         </label>
-                                        <select id="urgency" name="urgency" class="form-select">
+                                        <select id="urgency" name="urgency" class="form-select mobile-full-width">
                                             <option value="">เลือกความเร่งด่วน</option>
                                             <option value="standard">ปกติ (7-14 วัน)</option>
                                             <option value="urgent">เร่งด่วน (3-7 วัน)</option>
@@ -157,26 +168,32 @@
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                    <div>
+                                    <div class="form-group">
                                         <label for="origin" class="form-label">
                                             จุดต้นทาง
                                         </label>
                                         <input
                                             id="origin"
                                             name="origin"
-                                            class="form-input"
+                                            type="text"
+                                            class="form-input mobile-full-width"
                                             placeholder="เช่น กรุงเทพฯ, ประเทศไทย"
+                                            autocomplete="address-line1"
+                                            inputmode="text"
                                         />
                                     </div>
-                                    <div>
+                                    <div class="form-group">
                                         <label for="destination" class="form-label">
                                             จุดปลายทาง
                                         </label>
                                         <input
                                             id="destination"
                                             name="destination"
-                                            class="form-input"
+                                            type="text"
+                                            class="form-input mobile-full-width"
                                             placeholder="เช่น โตเกียว, ญี่ปุ่น"
+                                            autocomplete="address-line2"
+                                            inputmode="text"
                                         />
                                     </div>
                                 </div>
@@ -187,37 +204,45 @@
                                 <h3 class="text-lg font-semibold mb-4">ข้อมูลสินค้า</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
+                                    <div class="form-group">
                                         <label for="cargoType" class="form-label">
                                             ประเภทสินค้า
                                         </label>
                                         <input
                                             id="cargoType"
                                             name="cargoType"
-                                            class="form-input"
+                                            type="text"
+                                            class="form-input mobile-full-width"
                                             placeholder="เช่น อุปกรณ์อิเล็กทรอนิกส์"
+                                            inputmode="text"
                                         />
                                     </div>
-                                    <div>
+                                    <div class="form-group">
                                         <label for="weight" class="form-label">
                                             น้ำหนัก (กก.)
                                         </label>
                                         <input
                                             id="weight"
                                             name="weight"
-                                            class="form-input"
+                                            type="number"
+                                            class="form-input mobile-full-width"
                                             placeholder="เช่น 1000"
+                                            inputmode="numeric"
+                                            min="0"
+                                            step="0.1"
                                         />
                                     </div>
-                                    <div>
+                                    <div class="form-group">
                                         <label for="dimensions" class="form-label">
                                             ขนาด (ก×ย×ส ซม.)
                                         </label>
                                         <input
                                             id="dimensions"
                                             name="dimensions"
-                                            class="form-input"
+                                            type="text"
+                                            class="form-input mobile-full-width"
                                             placeholder="เช่น 100×80×60"
+                                            inputmode="text"
                                         />
                                     </div>
                                 </div>
@@ -225,42 +250,49 @@
 
                             <!-- แนบไฟล์รูปภาพ -->
                             <div class="border-t pt-6">
-                                <label for="attachment" class="form-label">
-                                    แนบรูปภาพ (ถ้ามี)
-                                </label>
-                                <input
-                                    id="attachment"
-                                    name="attachment"
-                                    type="file"
-                                    accept="image/*"
-                                    class="form-input"
-                                />
-                                <p class="text-xs text-muted-foreground mt-1">
-                                    สามารถแนบไฟล์รูปภาพประกอบใบเสนอราคาได้ (jpg, png, gif)
-                                </p>
+                                <div class="form-group">
+                                    <label for="attachment" class="form-label">
+                                        แนบรูปภาพ (ถ้ามี)
+                                    </label>
+                                    <input
+                                        id="attachment"
+                                        name="attachment"
+                                        type="file"
+                                        accept="image/*"
+                                        class="form-input mobile-full-width"
+                                        capture="environment"
+                                    />
+                                    <p class="text-xs text-muted-foreground mt-1">
+                                        สามารถแนบไฟล์รูปภาพประกอบใบเสนอราคาได้ (jpg, png, gif)
+                                    </p>
+                                </div>
                             </div>
 
                             <!-- รายละเอียดเพิ่มเติม -->
                             <div class="border-t pt-6">
-                                <label for="description" class="form-label">
-                                    รายละเอียดเพิ่มเติม
-                                </label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    class="form-textarea"
-                                    placeholder="กรุณาระบุรายละเอียดเพิ่มเติมที่ต้องการให้เราทราบ..."
-                                    rows="4"
-                                ></textarea>
+                                <div class="form-group">
+                                    <label for="description" class="form-label">
+                                        รายละเอียดเพิ่มเติม
+                                    </label>
+                                    <textarea
+                                        id="description"
+                                        name="description"
+                                        class="form-textarea mobile-full-width"
+                                        placeholder="กรุณาระบุรายละเอียดเพิ่มเติมที่ต้องการให้เราทราบ..."
+                                        rows="4"
+                                        inputmode="text"
+                                    ></textarea>
+                                </div>
                             </div>
 
                             <!-- ปุ่มส่ง -->
-                            <div class="flex flex-col sm:flex-row gap-4 pt-6">
-                                <button type="submit" class="btn btn-lg flex-1">
+                            <div class="flex flex-col sm:flex-row gap-4 pt-6 mobile-stack">
+                                <button type="submit" class="btn btn-secondary btn-lg flex-1 form-submit">
                                     <i class="fas fa-file-text h-5 w-5 mr-2"></i>
                                     ส่งคำขอใบเสนอราคา
                                 </button>
                                 <button type="button" id="clear-form" class="btn btn-outline btn-lg sm:w-auto">
+                                    <i class="fas fa-eraser h-4 w-4 mr-2"></i>
                                     เคลียร์ฟอร์ม
                                 </button>
                             </div>
