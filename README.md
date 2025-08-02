@@ -1,20 +1,20 @@
 # JLK Transservice - ระบบใบเสนอราคาและการติดต่อ
 
-ระบบใบเสนอราคาและการติดต่อที่เรียบง่าย ใช้ Formspree สำหรับการส่งอีเมลและ Flask สำหรับการจัดการข้อมูล
+ระบบเว็บไซต์โลจิสติกส์ที่เรียบง่าย ใช้ Formspree สำหรับการส่งอีเมลและ Flask สำหรับการเสิร์ฟเว็บไซต์
 
 ## คุณสมบัติ
 
 - ✅ ฟอร์มขอใบเสนอราคาสำหรับลูกค้า
 - ✅ ฟอร์มติดต่อสำหรับการสื่อสาร
 - ✅ ส่งอีเมลผ่าน Formspree โดยอัตโนมัติ
-- ✅ บันทึกข้อมูลในฐานข้อมูล SQLite
+- ✅ รองรับการอัปโหลดรูปภาพ
 - ✅ ระบบที่เรียบง่าย ไม่ซับซ้อน
 - ✅ ไม่ต้องตั้งค่า SMTP หรือ email server
 
 ## การตั้งค่าอีเมล
 
 ระบบใช้ Formspree (https://formspree.io) สำหรับการส่งอีเมล:
-- Formspree Endpoint: https://formspree.io/f/xovlnjoy
+- Formspree Endpoint: https://formspree.io/f/mzzvaepv
 - อีเมลปลายทาง: jlktransservice@gmail.com
 - ไม่ต้องตั้งค่า SMTP หรือ App Password
 
@@ -63,19 +63,16 @@ python app.py
 ├── static/
 │   ├── css/           # ไฟล์ CSS
 │   └── js/            # ไฟล์ JavaScript
-└── jlktran.db         # ฐานข้อมูล SQLite
 
 ```
 
 ## API Endpoints
 
-- `POST /api/quote` - บันทึกข้อมูลใบเสนอราคา
-- `POST /api/contact` - บันทึกข้อความติดต่อ
 - `GET /api/health` - ตรวจสอบสถานะระบบ
 
 ## หมายเหตุ
 
 - ระบบส่งอีเมลผ่าน Formspree ไปยัง jlktransservice@gmail.com
-- ข้อมูลจะถูกบันทึกในฐานข้อมูล SQLite เพื่อการสำรองข้อมูล
+- ฟอร์มทั้งหมดส่งข้อมูลตรงไปยัง Formspree แบบไม่ผ่านเซิร์ฟเวอร์
 - ระบบทำงานในโหมด development (debug=True)
 - ไม่ต้องตั้งค่า SMTP server หรือ email password
