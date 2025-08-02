@@ -1,7 +1,7 @@
-// Quote page specific JavaScript
+// Contact page specific JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
-    setupForm();
+    setupContactForm();
     setupToastContainer();
 });
 
@@ -15,22 +15,22 @@ function setupToastContainer() {
     }
 }
 
-// Setup form functionality
-function setupForm() {
-    const form = document.getElementById('quote-form');
-    const clearButton = document.getElementById('clear-form');
+// Setup contact form functionality
+function setupContactForm() {
+    const form = document.getElementById('contact-form');
+    const clearButton = document.getElementById('clear-contact-form');
 
     if (form) {
-        form.addEventListener('submit', handleFormSubmit);
+        form.addEventListener('submit', handleContactFormSubmit);
     }
 
     if (clearButton) {
-        clearButton.addEventListener('click', clearForm);
+        clearButton.addEventListener('click', clearContactForm);
     }
 }
 
-// Handle form submission
-function handleFormSubmit(event) {
+// Handle contact form submission
+async function handleContactFormSubmit(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
@@ -38,53 +38,48 @@ function handleFormSubmit(event) {
     
     // Collect form data
     for (let [key, value] of formData.entries()) {
-        data[key] = value;
+        data[key] = value.trim();
     }
 
     // Validate required fields
-    const requiredFields = ['companyName', 'contactName', 'email', 'phone', 'serviceType'];
+    const requiredFields = ['name', 'email', 'subject', 'message'];
     const missingFields = requiredFields.filter(field => !data[field]);
 
     if (missingFields.length > 0) {
-        showToast('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+        showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน', 'error');
+        highlightMissingFields(missingFields);
         return;
     }
 
     // Validate email
     if (!validateEmail(data.email)) {
         showToast('กรุณากรอกอีเมลให้ถูกต้อง', 'error');
+        document.getElementById('contact-email').focus();
         return;
     }
 
-    // Validate phone
-    if (!validatePhone(data.phone)) {
+    // Validate phone if provided
+    if (data.phone && !validatePhone(data.phone)) {
         showToast('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง', 'error');
+        document.getElementById('contact-phone').focus();
         return;
     }
 
-    // Generate email and send
-    generateEmailQuote(data);
+    // Submit form
+    await submitContactForm(data);
 }
 
-// Submit quote to API
-async function generateEmailQuote(data) {
-    const submitButton = document.querySelector('button[type="submit"]');
+// Submit contact form to API
+async function submitContactForm(data) {
+    const submitButton = document.querySelector('#contact-form button[type="submit"]');
     const originalContent = submitButton.innerHTML;
     
     try {
         // Show processing state
         submitButton.disabled = true;
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อความ...';
 
-        // Collect additional services if any
-        const additionalServices = [];
-        const checkboxes = document.querySelectorAll('input[name="additionalServices"]:checked');
-        checkboxes.forEach(checkbox => {
-            additionalServices.push(checkbox.value);
-        });
-        data.additionalServices = additionalServices;
-
-        const response = await fetch('/api/quote', {
+        const response = await fetch('/api/contact', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,12 +90,12 @@ async function generateEmailQuote(data) {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            showToast(`ส่งคำขอใบเสนอราคาสำเร็จ! รหัสอ้างอิง: #${result.quote_id.toString().padStart(6, '0')}`, 'success');
-            clearForm();
+            showToast(`ส่งข้อความสำเร็จ! รหัสอ้างอิง: #${result.contact_id.toString().padStart(6, '0')}`, 'success');
+            clearContactForm();
             
             // Show additional success information
             setTimeout(() => {
-                showToast('เราจะติดต่อกลับภายใน 24 ชั่วโมง พร้อมใบเสนอราคา', 'info');
+                showToast('เราจะติดต่อกลับภายใน 24 ชั่วโมง', 'info');
             }, 2000);
             
         } else {
@@ -108,7 +103,7 @@ async function generateEmailQuote(data) {
         }
 
     } catch (error) {
-        console.error('Error submitting quote:', error);
+        console.error('Error submitting contact form:', error);
         showToast(error.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง', 'error');
     } finally {
         // Reset button
@@ -117,43 +112,14 @@ async function generateEmailQuote(data) {
     }
 }
 
-// Helper functions for readable names
-function getServiceTypeName(type) {
-    const serviceTypes = {
-        'export': 'บริการส่งออก',
-        'import': 'บริการนำเข้า', 
-        'customs': 'พิธีการศุลกากร',
-        'domestic': 'ขนส่งภายในประเทศ',
-        'consulting': 'ที่ปรึกษาโลจิสติกส์',
-        'other': 'อื่นๆ'
-    };
-    return serviceTypes[type] || type;
-}
-
-function getUrgencyName(urgency) {
-    const urgencyTypes = {
-        'standard': 'ปกติ (7-14 วัน)',
-        'urgent': 'เร่งด่วน (3-7 วัน)', 
-        'express': 'ด่วนพิเศษ (1-3 วัน)',
-        'same-day': 'ภายในวันเดียว'
-    };
-    return urgencyTypes[urgency] || urgency || 'ไม่ระบุ';
-}
-
-// Clear form function
-function clearForm() {
-    const form = document.getElementById('quote-form');
+// Clear contact form
+function clearContactForm() {
+    const form = document.getElementById('contact-form');
     if (form) {
         form.reset();
         
-        // Uncheck all checkboxes
-        const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        
         // Clear custom validation messages
-        const inputs = form.querySelectorAll('input, textarea, select');
+        const inputs = form.querySelectorAll('input, textarea');
         inputs.forEach(input => {
             input.setCustomValidity('');
             input.classList.remove('border-red-500', 'border-green-500');
@@ -161,6 +127,17 @@ function clearForm() {
         
         showToast('ฟอร์มถูกเคลียร์แล้ว', 'success');
     }
+}
+
+// Highlight missing fields
+function highlightMissingFields(missingFields) {
+    missingFields.forEach(field => {
+        const input = document.querySelector(`input[name="${field}"], textarea[name="${field}"]`);
+        if (input) {
+            input.classList.add('border-red-500');
+            input.focus();
+        }
+    });
 }
 
 // Enhanced toast function with different types
@@ -220,19 +197,40 @@ function showToast(message, type = 'success') {
 document.addEventListener('input', function(e) {
     if (e.target.type === 'email') {
         const email = e.target.value;
-        if (email && !validateEmail(email)) {
+        if (email && validateEmail(email)) {
+            e.target.classList.remove('border-red-500');
+            e.target.classList.add('border-green-500');
+            e.target.setCustomValidity('');
+        } else if (email) {
+            e.target.classList.remove('border-green-500');
+            e.target.classList.add('border-red-500');
             e.target.setCustomValidity('กรุณากรอกอีเมลให้ถูกต้อง');
         } else {
+            e.target.classList.remove('border-red-500', 'border-green-500');
             e.target.setCustomValidity('');
         }
     }
     
     if (e.target.name === 'phone') {
         const phone = e.target.value;
-        if (phone && !validatePhone(phone)) {
+        if (phone && validatePhone(phone)) {
+            e.target.classList.remove('border-red-500');
+            e.target.classList.add('border-green-500');
+            e.target.setCustomValidity('');
+        } else if (phone) {
+            e.target.classList.remove('border-green-500');
+            e.target.classList.add('border-red-500');
             e.target.setCustomValidity('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (8-10 หลัก)');
         } else {
+            e.target.classList.remove('border-red-500', 'border-green-500');
             e.target.setCustomValidity('');
+        }
+    }
+
+    // Real-time validation for required fields
+    if (e.target.hasAttribute('required')) {
+        if (e.target.value.trim()) {
+            e.target.classList.remove('border-red-500');
         }
     }
 });
@@ -254,6 +252,35 @@ document.addEventListener('input', function(e) {
 document.addEventListener('input', function(e) {
     if (e.target.tagName === 'TEXTAREA') {
         e.target.style.height = 'auto';
-        e.target.style.height = e.target.scrollHeight + 'px';
+        e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+    }
+});
+
+// Character counter for message field
+document.addEventListener('DOMContentLoaded', function() {
+    const messageField = document.getElementById('contact-message');
+    if (messageField) {
+        const maxLength = 500;
+        const counter = document.createElement('div');
+        counter.className = 'text-sm text-gray-500 mt-1 text-right';
+        counter.id = 'message-counter';
+        messageField.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+            const remaining = maxLength - messageField.value.length;
+            counter.textContent = `${messageField.value.length}/${maxLength} ตัวอักษร`;
+            
+            if (remaining < 50) {
+                counter.className = 'text-sm text-red-500 mt-1 text-right';
+            } else if (remaining < 100) {
+                counter.className = 'text-sm text-yellow-500 mt-1 text-right';
+            } else {
+                counter.className = 'text-sm text-gray-500 mt-1 text-right';
+            }
+        }
+        
+        messageField.addEventListener('input', updateCounter);
+        messageField.setAttribute('maxlength', maxLength);
+        updateCounter();
     }
 });
