@@ -11,14 +11,12 @@ This is the main Python backend application that handles:
 """
 
 from flask import Flask, render_template, send_from_directory, jsonify
-from flask_cors import CORS
 import datetime
 import os
 import logging
 
 # Initialize Flask application
 app = Flask(__name__, static_folder='static', template_folder='.')
-CORS(app)  # Enable CORS for all routes
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -74,6 +72,6 @@ if __name__ == '__main__':
     print("   - Quote: http://localhost:5000/quote.html")
     print("   - Contact: http://localhost:5000/contact.html")
     print("   - API Health: http://localhost:5000/api/health")
-    print("📧 Forms now submit via EmailJS")
+    print("📧 Forms now submit via Formspree")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
