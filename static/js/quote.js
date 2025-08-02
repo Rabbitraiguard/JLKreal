@@ -92,7 +92,15 @@ async function generateEmailQuote(data) {
             body: JSON.stringify(data)
         });
 
-        const result = await response.json();
+        let result;
+        try {
+            result = await response.json();
+        } catch (parseError) {
+            // If JSON parsing fails, the server likely returned HTML (error page)
+            const textResponse = await response.text();
+            console.error('Server returned non-JSON response:', textResponse);
+            throw new Error('เซิร์ฟเวอร์ไม่สามารถประมวลผลข้อมูลได้ กรุณาตรวจสอบการตั้งค่า');
+        }
 
         if (response.ok && result.success) {
             showToast(`ส่งคำขอใบเสนอราคาสำเร็จ! รหัสอ้างอิง: #${result.quote_id.toString().padStart(6, '0')}`, 'success');
