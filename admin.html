@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - JLK Transservice</title>
+    <meta name="description" content="ระบบจัดการใบเสนอราคาและอีเมล JLK Transservice" />
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+    
+    <style>
+        .admin-sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        .admin-sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .admin-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        .admin-content.expanded {
+            margin-left: 0;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-processing { background-color: #dbeafe; color: #1e40af; }
+        .status-quoted { background-color: #d1fae5; color: #065f46; }
+        .status-completed { background-color: #e5e7eb; color: #374151; }
+        .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+        
+        .email-preview {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        
+        .field-order-item {
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+        
+        .field-order-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .field-order-item.dragging {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Admin Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center">
+                <button id="sidebar-toggle" class="text-gray-500 hover:text-gray-700 mr-4">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-cog text-primary mr-2"></i>
+                    Admin Panel
+                </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-600">
+                    <i class="fas fa-user mr-1"></i>
+                    JLK Admin
+                </div>
+                <a href="index.html" class="btn btn-outline btn-sm">
+                    <i class="fas fa-home mr-2"></i>
+                    กลับสู่เว็บไซต์
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="admin-sidebar" class="admin-sidebar bg-white w-64 shadow-lg">
+            <nav class="mt-8">
+                <div class="px-4 space-y-2">
+                    <button class="nav-item active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        แดชบอร์ด
+                    </button>
+                    <button class="nav-item" data-tab="quotes">
+                        <i class="fas fa-file-text mr-3"></i>
+                        จัดการใบเสนอราคา
+                    </button>
+                    <button class="nav-item" data-tab="email-layout">
+                        <i class="fas fa-envelope mr-3"></i>
+                        จัดการรูปแบบอีเมล
+                    </button>
+                    <button class="nav-item" data-tab="settings">
+                        <i class="fas fa-cog mr-3"></i>
+                        ตั้งค่าระบบ
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div id="admin-content" class="admin-content flex-1 overflow-y-auto">
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="p-6">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">แดชบอร์ด</h2>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-blue-100">
+                                        <i class="fas fa-file-text text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600">ใบเสนอราคาใหม่</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="new-quotes-count">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-yellow-100">
+                                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600">รอดำเนินการ</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="pending-quotes-count">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-green-100">
+                                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600">เสร็จสิ้น</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="completed-quotes-count">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-purple-100">
+                                        <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600">รวมทั้งหมด</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="total-quotes-count">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Quotes -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ใบเสนอราคาล่าสุด</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="recent-quotes" class="space-y-4">
+                                <!-- Recent quotes will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quotes Management Tab -->
+            <div id="quotes-tab" class="tab-content">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-900">จัดการใบเสนอราคา</h2>
+                        <div class="flex space-x-3">
+                            <select id="status-filter" class="form-select">
+                                <option value="">ทุกสถานะ</option>
+                                <option value="pending">รอดำเนินการ</option>
+                                <option value="processing">กำลังดำเนินการ</option>
+                                <option value="quoted">ส่งใบเสนอราคาแล้ว</option>
+                                <option value="completed">เสร็จสิ้น</option>
+                                <option value="cancelled">ยกเลิก</option>
+                            </select>
+                            <button id="refresh-quotes" class="btn btn-outline">
+                                <i class="fas fa-refresh mr-2"></i>
+                                รีเฟรช
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quotes Table -->
+                    <div class="card">
+                        <div class="card-content p-0">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">รหัส</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">บริษัท</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ผู้ติดต่อ</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">บริการ</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สถานะ</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">การจัดการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="quotes-table-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Quotes will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Layout Tab -->
+            <div id="email-layout-tab" class="tab-content">
+                <div class="p-6">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">จัดการรูปแบบอีเมล</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Field Order Management -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">ลำดับข้อมูลในอีเมล</h3>
+                                <p class="card-description">ลากและวางเพื่อเปลี่ยนลำดับการแสดงข้อมูลในอีเมล</p>
+                            </div>
+                            <div class="card-content">
+                                <div id="field-order-list" class="space-y-2">
+                                    <!-- Field order items will be loaded here -->
+                                </div>
+                                <div class="mt-4 pt-4 border-t">
+                                    <button id="save-field-order" class="btn btn-primary">
+                                        <i class="fas fa-save mr-2"></i>
+                                        บันทึกลำดับ
+                                    </button>
+                                    <button id="reset-field-order" class="btn btn-outline ml-2">
+                                        <i class="fas fa-undo mr-2"></i>
+                                        รีเซ็ต
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Email Preview -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">ตัวอย่างอีเมล</h3>
+                                <p class="card-description">ตัวอย่างอีเมลที่จะส่งไปยังบริษัท</p>
+                            </div>
+                            <div class="card-content">
+                                <div id="email-preview" class="email-preview">
+                                    <!-- Email preview will be loaded here -->
+                                </div>
+                                <div class="mt-4 pt-4 border-t">
+                                    <button id="preview-email" class="btn btn-secondary">
+                                        <i class="fas fa-eye mr-2"></i>
+                                        อัปเดตตัวอย่าง
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Settings -->
+                    <div class="card mt-8">
+                        <div class="card-header">
+                            <h3 class="card-title">ตั้งค่าอีเมล</h3>
+                            <p class="card-description">กำหนดค่าการส่งอีเมลและเทมเพลต</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="form-group">
+                                    <label class="form-label">อีเมลปลายทาง (คั่นด้วยเครื่องหมายจุลภาค)</label>
+                                    <input id="company-emails" type="text" class="form-input" 
+                                           value="jlktransservice@gmail.com, meowkumaxd@gmail.com"
+                                           placeholder="email1@domain.com, email2@domain.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">หัวข้ออีเมล</label>
+                                    <input id="email-subject" type="text" class="form-input" 
+                                           value="🔔 คำขอใบเสนอราคาใหม่ #{quote_id} - {company_name}"
+                                           placeholder="หัวข้ออีเมล">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button id="save-email-settings" class="btn btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    บันทึกการตั้งค่า
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="p-6">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">ตั้งค่าระบบ</h2>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">การตั้งค่าทั่วไป</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="space-y-6">
+                                <div class="form-group">
+                                    <label class="form-label">ชื่อบริษัท</label>
+                                    <input id="company-name" type="text" class="form-input" value="JLK Transservice">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">เบอร์โทรศัพท์</label>
+                                    <input id="company-phone" type="text" class="form-input" value="02-123-4567">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">เวลาทำการ</label>
+                                    <input id="business-hours" type="text" class="form-input" value="จันทร์-ศุกร์ 8:00-18:00 น.">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">เวลาตอบกลับ (ชั่วโมง)</label>
+                                    <input id="response-time" type="number" class="form-input" value="24" min="1" max="72">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <button id="save-settings" class="btn btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    บันทึกการตั้งค่า
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote Detail Modal -->
+    <div id="quote-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900" id="modal-title">รายละเอียดใบเสนอราคา</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="modal-content" class="mt-2">
+                    <!-- Quote details will be loaded here -->
+                </div>
+                <div class="flex justify-end mt-6 space-x-3">
+                    <select id="modal-status-select" class="form-select">
+                        <option value="pending">รอดำเนินการ</option>
+                        <option value="processing">กำลังดำเนินการ</option>
+                        <option value="quoted">ส่งใบเสนอราคาแล้ว</option>
+                        <option value="completed">เสร็จสิ้น</option>
+                        <option value="cancelled">ยกเลิก</option>
+                    </select>
+                    <button id="update-status" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        อัปเดตสถานะ
+                    </button>
+                    <button id="close-modal-btn" class="btn btn-outline">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+    <script src="static/js/admin.js"></script>
+</body>
+</html>

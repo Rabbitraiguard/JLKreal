@@ -53,11 +53,11 @@ function handleFormSubmit(event) {
         return;
     }
 
-    // Simulate form submission (in real implementation, this would send to backend)
+    // Submit form to backend
     submitQuoteForm(data);
 }
 
-// Simulate form submission
+// Submit form to backend
 function submitQuoteForm(data) {
     // Show loading state
     const submitButton = document.querySelector('button[type="submit"]');
@@ -65,32 +65,7 @@ function submitQuoteForm(data) {
     submitButton.disabled = true;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่ง...';
 
-    // Simulate API call
-    setTimeout(() => {
-        // Success
-        showToast('ส่งคำขอใบเสนอราคาสำเร็จ! เราจะติดต่อกลับภายใน 24 ชั่วโมง', 'success');
-        
-        // Reset button
-        submitButton.disabled = false;
-        submitButton.innerHTML = originalContent;
-        
-        // Clear form
-        clearForm();
-        
-        // Log data (in real implementation, this would be sent to backend)
-        console.log('Quote Request Data:', data);
-        
-        // You can also send this data to a Python backend
-        sendToPythonBackend(data);
-        
-    }, 2000);
-}
-
-// Send data to Python backend (example)
-function sendToPythonBackend(data) {
-    // In a real implementation, you would send this to your Python backend
-    // Example using fetch API:
-    /*
+    // Send to Python backend
     fetch('/api/quote', {
         method: 'POST',
         headers: {
@@ -100,16 +75,28 @@ function sendToPythonBackend(data) {
     })
     .then(response => response.json())
     .then(result => {
+        // Reset button
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalContent;
+        
+        if (result.success) {
+            showToast(`ส่งคำขอใบเสนอราคาสำเร็จ! รหัสอ้างอิง: #${result.quote_id.toString().padStart(6, '0')} เราจะติดต่อกลับภายใน 24 ชั่วโมง`, 'success');
+            // Clear form after successful submission
+            clearForm();
+        } else {
+            showToast(result.message || 'เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
+        }
+        
         console.log('Backend response:', result);
     })
     .catch(error => {
+        // Reset button
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalContent;
+        
         console.error('Error:', error);
-        showToast('เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
     });
-    */
-    
-    // For now, just log the data
-    console.log('Data that would be sent to Python backend:', data);
 }
 
 // Clear form function

@@ -21,6 +21,10 @@ import json
 import datetime
 import os
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize Flask application
 app = Flask(__name__, static_folder='static', template_folder='.')
@@ -37,9 +41,10 @@ DATABASE = 'jlktran.db'
 EMAIL_CONFIG = {
     'smtp_server': 'smtp.gmail.com',
     'smtp_port': 587,
-    'username': 'your-email@gmail.com',  # Replace with your email
-    'password': 'your-app-password',      # Replace with your app password
-    'from_email': 'noreply@jlktran.com'
+    'username': 'jlktransservice@gmail.com',  # Main company email
+    'password': os.environ.get('EMAIL_PASSWORD', 'your-app-password'),  # Set via environment variable
+    'from_email': 'jlktransservice@gmail.com',
+    'company_emails': ['jlktransservice@gmail.com', 'meowkumaxd@gmail.com']  # Target emails
 }
 
 def init_database():
@@ -237,47 +242,67 @@ def submit_quote():
             customer_email_html
         )
         
-        # Send notification to company
+        # Send notification to company emails
         company_email_html = f'''
         <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <h2>คำขอใบเสนอราคาใหม่ #{quote_id:06d}</h2>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto;">
+            <div style="background-color: #1e40af; color: white; padding: 20px; text-align: center; margin-bottom: 20px;">
+                <h1>JLK Transservice</h1>
+                <h2>คำขอใบเสนอราคาใหม่ #{quote_id:06d}</h2>
+                <p style="margin: 0; opacity: 0.9;">วันที่: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}</p>
+            </div>
             
-            <h3>ข้อมูลลูกค้า:</h3>
-            <ul>
-                <li><strong>บริษัท:</strong> {data['companyName']}</li>
-                <li><strong>ผู้ติดต่อ:</strong> {data['contactName']}</li>
-                <li><strong>อีเมล:</strong> {data['email']}</li>
-                <li><strong>โทรศัพท์:</strong> {data['phone']}</li>
-            </ul>
+            <div style="padding: 20px; background-color: #f8fafc; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">📋 ข้อมูลลูกค้า</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr><td style="padding: 8px; font-weight: bold; width: 150px;">บริษัท:</td><td style="padding: 8px;">{data['companyName']}</td></tr>
+                    <tr style="background-color: #f1f5f9;"><td style="padding: 8px; font-weight: bold;">ผู้ติดต่อ:</td><td style="padding: 8px;">{data['contactName']}</td></tr>
+                    <tr><td style="padding: 8px; font-weight: bold;">อีเมล:</td><td style="padding: 8px;"><a href="mailto:{data['email']}">{data['email']}</a></td></tr>
+                    <tr style="background-color: #f1f5f9;"><td style="padding: 8px; font-weight: bold;">โทรศัพท์:</td><td style="padding: 8px;"><a href="tel:{data['phone']}">{data['phone']}</a></td></tr>
+                </table>
+            </div>
             
-            <h3>รายละเอียดบริการ:</h3>
-            <ul>
-                <li><strong>ประเภทบริการ:</strong> {data['serviceType']}</li>
-                <li><strong>จุดต้นทาง:</strong> {data.get('origin', 'ไม่ระบุ')}</li>
-                <li><strong>จุดปลายทาง:</strong> {data.get('destination', 'ไม่ระบุ')}</li>
-                <li><strong>ประเภทสินค้า:</strong> {data.get('cargoType', 'ไม่ระบุ')}</li>
-                <li><strong>น้ำหนัก:</strong> {data.get('weight', 'ไม่ระบุ')} กก.</li>
-                <li><strong>ขนาด:</strong> {data.get('dimensions', 'ไม่ระบุ')} ซม.</li>
-                <li><strong>ความเร่งด่วน:</strong> {data.get('urgency', 'ไม่ระบุ')}</li>
-            </ul>
+            <div style="padding: 20px; background-color: #fff7ed; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #ea580c; border-bottom: 2px solid #fed7aa; padding-bottom: 10px;">🚚 รายละเอียดบริการ</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr><td style="padding: 8px; font-weight: bold; width: 150px;">ประเภทบริการ:</td><td style="padding: 8px;">{data['serviceType']}</td></tr>
+                    <tr style="background-color: #fef3e2;"><td style="padding: 8px; font-weight: bold;">จุดต้นทาง:</td><td style="padding: 8px;">{data.get('origin', 'ไม่ระบุ')}</td></tr>
+                    <tr><td style="padding: 8px; font-weight: bold;">จุดปลายทาง:</td><td style="padding: 8px;">{data.get('destination', 'ไม่ระบุ')}</td></tr>
+                    <tr style="background-color: #fef3e2;"><td style="padding: 8px; font-weight: bold;">ความเร่งด่วน:</td><td style="padding: 8px;">{data.get('urgency', 'ไม่ระบุ')}</td></tr>
+                </table>
+            </div>
             
-            <h3>รายละเอียดเพิ่มเติม:</h3>
-            <p>{data.get('description', 'ไม่มี')}</p>
+            <div style="padding: 20px; background-color: #f0fdf4; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #16a34a; border-bottom: 2px solid #bbf7d0; padding-bottom: 10px;">📦 ข้อมูลสินค้า</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr><td style="padding: 8px; font-weight: bold; width: 150px;">ประเภทสินค้า:</td><td style="padding: 8px;">{data.get('cargoType', 'ไม่ระบุ')}</td></tr>
+                    <tr style="background-color: #ecfdf5;"><td style="padding: 8px; font-weight: bold;">น้ำหนัก:</td><td style="padding: 8px;">{data.get('weight', 'ไม่ระบุ')} กก.</td></tr>
+                    <tr><td style="padding: 8px; font-weight: bold;">ขนาด:</td><td style="padding: 8px;">{data.get('dimensions', 'ไม่ระบุ')} ซม.</td></tr>
+                </table>
+            </div>
             
-            <h3>บริการเสริม:</h3>
-            <p>{', '.join(data.get('additionalServices', [])) if data.get('additionalServices') else 'ไม่มี'}</p>
+            {f'<div style="padding: 20px; background-color: #fef7ff; border-radius: 8px; margin-bottom: 20px;"><h3 style="color: #a21caf; border-bottom: 2px solid #f3e8ff; padding-bottom: 10px;">📝 รายละเอียดเพิ่มเติม</h3><p style="line-height: 1.6; margin: 0;">{data.get("description", "ไม่มี")}</p></div>' if data.get('description') else ''}
             
-            <p><strong>กรุณาติดต่อลูกค้าภายใน 24 ชั่วโมง</strong></p>
+            <div style="background-color: #dc2626; color: white; padding: 20px; text-align: center; border-radius: 8px; margin-top: 30px;">
+                <h3 style="margin: 0 0 10px 0;">⏰ การดำเนินการ</h3>
+                <p style="margin: 0; font-size: 16px;">กรุณาติดต่อลูกค้าภายใน 24 ชั่วโมง</p>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background-color: #f9fafb; border-radius: 8px; text-align: center; color: #6b7280; font-size: 14px;">
+                <p style="margin: 0;">ระบบจัดการใบเสนอราคา JLK Transservice</p>
+                <p style="margin: 5px 0 0 0;">สร้างเมื่อ: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}</p>
+            </div>
         </body>
         </html>
         '''
         
-        send_email(
-            'sales@jlktran.com',  # Company email
-            f'คำขอใบเสนอราคาใหม่ #{quote_id:06d} - {data["companyName"]}',
-            company_email_html
-        )
+        # Send to both company emails
+        for email in EMAIL_CONFIG['company_emails']:
+            send_email(
+                email,
+                f'🔔 คำขอใบเสนอราคาใหม่ #{quote_id:06d} - {data["companyName"]}',
+                company_email_html
+            )
         
         return jsonify({
             'success': True,
@@ -440,6 +465,104 @@ def health_check():
         'timestamp': datetime.datetime.now().isoformat(),
         'service': 'JLK Transservice Backend'
     })
+
+@app.route('/api/admin/email-layout', methods=['GET', 'POST'])
+def manage_email_layout():
+    """Manage email layout configuration"""
+    if request.method == 'GET':
+        # Return current email layout configuration
+        # In a real app, this would be stored in database
+        default_layout = [
+            {'id': 'customer_info', 'label': '📋 ข้อมูลลูกค้า', 'enabled': True, 'order': 0},
+            {'id': 'service_info', 'label': '🚚 รายละเอียดบริการ', 'enabled': True, 'order': 1},
+            {'id': 'cargo_info', 'label': '📦 ข้อมูลสินค้า', 'enabled': True, 'order': 2},
+            {'id': 'additional_info', 'label': '📝 รายละเอียดเพิ่มเติม', 'enabled': True, 'order': 3},
+            {'id': 'urgency_info', 'label': '⏰ ความเร่งด่วน', 'enabled': True, 'order': 4}
+        ]
+        
+        return jsonify({
+            'success': True,
+            'layout': default_layout
+        })
+    
+    elif request.method == 'POST':
+        # Save email layout configuration
+        data = request.get_json()
+        layout = data.get('layout', [])
+        
+        # In a real app, save to database
+        # For now, just return success
+        
+        return jsonify({
+            'success': True,
+            'message': 'บันทึกการจัดเรียงอีเมลสำเร็จ'
+        })
+
+@app.route('/api/admin/email-settings', methods=['GET', 'POST'])
+def manage_email_settings():
+    """Manage email settings"""
+    if request.method == 'GET':
+        return jsonify({
+            'success': True,
+            'settings': {
+                'company_emails': EMAIL_CONFIG['company_emails'],
+                'email_subject': '🔔 คำขอใบเสนอราคาใหม่ #{quote_id} - {company_name}'
+            }
+        })
+    
+    elif request.method == 'POST':
+        data = request.get_json()
+        
+        # Update email configuration
+        if 'company_emails' in data:
+            EMAIL_CONFIG['company_emails'] = data['company_emails']
+        
+        return jsonify({
+            'success': True,
+            'message': 'บันทึกการตั้งค่าอีเมลสำเร็จ'
+        })
+
+@app.route('/api/admin/test-email', methods=['POST'])
+def test_email():
+    """Send test email"""
+    try:
+        data = request.get_json()
+        test_email_address = data.get('email', EMAIL_CONFIG['company_emails'][0])
+        
+        test_html = '''
+        <html>
+        <body style="font-family: Arial, sans-serif;">
+            <h2>🧪 ทดสอบระบบอีเมล JLK Transservice</h2>
+            <p>นี่คือการทดสอบระบบส่งอีเมลของ JLK Transservice</p>
+            <p><strong>เวลาส่ง:</strong> {timestamp}</p>
+            <p>หากคุณได้รับอีเมลนี้ แสดงว่าระบบทำงานปกติ ✅</p>
+        </body>
+        </html>
+        '''.format(timestamp=datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+        
+        success = send_email(
+            test_email_address,
+            '🧪 ทดสอบระบบอีเมล - JLK Transservice',
+            test_html
+        )
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': f'ส่งอีเมลทดสอบไปยัง {test_email_address} สำเร็จ'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'ไม่สามารถส่งอีเมลทดสอบได้'
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Error sending test email: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'เกิดข้อผิดพลาดในการส่งอีเมลทดสอบ'
+        }), 500
 
 @app.errorhandler(404)
 def not_found(error):
