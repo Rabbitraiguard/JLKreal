@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ขอใบเสนอราคา - JLK Transservice</title>
+    <meta name="description" content="ขอใบเสนอราคาบริการโลจิสติกส์ นำเข้า-ส่งออก และพิธีการทางศุลกากร จาก JLK Transservice" />
+    <meta name="author" content="JLK Transservice" />
+
+    <meta property="og:title" content="ขอใบเสนอราคา - JLK Transservice" />
+    <meta property="og:description" content="ขอใบเสนอราคาบริการโลจิสติกส์ นำเข้า-ส่งออก และพิธีการทางศุลกากร จาก JLK Transservice" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/public/og-image.svg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@jlktran" />
+    <meta name="twitter:image" content="/public/og-image.svg" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground">
+    <!-- Include Navbar -->
+    <div id="navbar-container"></div>
+
+    <!-- ส่วนหัวหน้า -->
+    <section class="bg-gradient-to-r from-primary to-primary-glow text-white py-20 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-8" 
+             style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.06\"%3E%3Crect x=\"20\" y=\"20\" width=\"15\" height=\"15\" stroke=\"%23ffffff\" stroke-width=\"1\" fill=\"none\"/%3E%3Ccircle cx=\"70\" cy=\"30\" r=\"8\" fill=\"none\" stroke=\"%23ffffff\" stroke-width=\"1\"/%3E%3Cpath d=\"M30,70 L40,70 L40,80 L30,80 Z\"/%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                    ขอใบเสนอราคา
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
+                    กรอกข้อมูลเพื่อรับใบเสนอราคาที่เหมาะสมกับความต้องการของคุณ
+                    เราจะติดต่อกลับภายใน 24 ชั่วโมง
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- เนื้อหาหลัก -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="bg-white/50 backdrop-blur-sm rounded-xl p-2 mb-8">
+            <div class="text-center p-6">
+                <div class="text-sm text-muted-foreground mb-3">
+                    💡 <strong>เคล็ดลับ:</strong> ยิ่งให้ข้อมูลละเอียด ยิ่งได้ราคาที่แม่นยำมากขึ้น
+                </div>
+                <p class="text-sm text-muted-foreground">
+                    หากต้องการความช่วยเหลือเร่งด่วน สามารถติดต่อเราได้ที่หน้า <a href="contact.html" class="text-primary hover:underline">ติดต่อเรา</a>
+                </p>
+            </div>
+        </div>
+
+            <!-- ฟอร์มขอใบเสนอราคา -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title flex items-center">
+                            <i class="fas fa-calculator h-6 w-6 mr-2 text-primary"></i>
+                            แบบฟอร์มขอใบเสนอราคา
+                        </h3>
+                        <p class="card-description">
+                            กรุณากรอกข้อมูลให้ครบถ้วนเพื่อให้เราสามารถเสนอราคาที่เหมาะสมที่สุด
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <form id="quote-form" class="space-y-6">
+                            
+                            <!-- ข้อมูลบริษัท -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="companyName" class="form-label">
+                                        ชื่อบริษัท *
+                                    </label>
+                                    <input
+                                        id="companyName"
+                                        name="companyName"
+                                        class="form-input"
+                                        placeholder="กรอกชื่อบริษัท"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label for="contactName" class="form-label">
+                                        ชื่อผู้ติดต่อ *
+                                    </label>
+                                    <input
+                                        id="contactName"
+                                        name="contactName"
+                                        class="form-input"
+                                        placeholder="กรอกชื่อผู้ติดต่อ"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label for="email" class="form-label">
+                                        อีเมล *
+                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        class="form-input"
+                                        placeholder="กรอกอีเมล"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label for="phone" class="form-label">
+                                        เบอร์โทรศัพท์ *
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        class="form-input"
+                                        placeholder="กรอกเบอร์โทรศัพท์"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- ข้อมูลบริการ -->
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-semibold mb-4">ข้อมูลบริการ</h3>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="serviceType" class="form-label">
+                                            ประเภทบริการ *
+                                        </label>
+                                        <select id="serviceType" name="serviceType" class="form-select" required>
+                                            <option value="">เลือกประเภทบริการ</option>
+                                            <option value="export">บริการส่งออก</option>
+                                            <option value="import">บริการนำเข้า</option>
+                                            <option value="customs">พิธีการศุลกากร</option>
+                                            <option value="domestic">ขนส่งภายในประเทศ</option>
+                                            <option value="consulting">ที่ปรึกษาโลจิสติกส์</option>
+                                            <option value="other">อื่นๆ</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="urgency" class="form-label">
+                                            ความเร่งด่วน
+                                        </label>
+                                        <select id="urgency" name="urgency" class="form-select">
+                                            <option value="">เลือกความเร่งด่วน</option>
+                                            <option value="standard">ปกติ (7-14 วัน)</option>
+                                            <option value="urgent">เร่งด่วน (3-7 วัน)</option>
+                                            <option value="express">ด่วนพิเศษ (1-3 วัน)</option>
+                                            <option value="same-day">ภายในวันเดียว</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                    <div>
+                                        <label for="origin" class="form-label">
+                                            จุดต้นทาง
+                                        </label>
+                                        <input
+                                            id="origin"
+                                            name="origin"
+                                            class="form-input"
+                                            placeholder="เช่น กรุงเทพฯ, ประเทศไทย"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="destination" class="form-label">
+                                            จุดปลายทาง
+                                        </label>
+                                        <input
+                                            id="destination"
+                                            name="destination"
+                                            class="form-input"
+                                            placeholder="เช่น โตเกียว, ญี่ปุ่น"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ข้อมูลสินค้า -->
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-semibold mb-4">ข้อมูลสินค้า</h3>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label for="cargoType" class="form-label">
+                                            ประเภทสินค้า
+                                        </label>
+                                        <input
+                                            id="cargoType"
+                                            name="cargoType"
+                                            class="form-input"
+                                            placeholder="เช่น อุปกรณ์อิเล็กทรอนิกส์"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="weight" class="form-label">
+                                            น้ำหนัก (กก.)
+                                        </label>
+                                        <input
+                                            id="weight"
+                                            name="weight"
+                                            class="form-input"
+                                            placeholder="เช่น 1000"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="dimensions" class="form-label">
+                                            ขนาด (ก×ย×ส ซม.)
+                                        </label>
+                                        <input
+                                            id="dimensions"
+                                            name="dimensions"
+                                            class="form-input"
+                                            placeholder="เช่น 100×80×60"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- รายละเอียดเพิ่มเติม -->
+                            <div class="border-t pt-6">
+                                <label for="description" class="form-label">
+                                    รายละเอียดเพิ่มเติม
+                                </label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    class="form-textarea"
+                                    placeholder="กรุณาระบุรายละเอียดเพิ่มเติมที่ต้องการให้เราทราบ..."
+                                    rows="4"
+                                ></textarea>
+                            </div>
+
+                            <!-- ปุ่มส่ง -->
+                            <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                                <button type="submit" class="btn btn-lg flex-1">
+                                    <i class="fas fa-file-text h-5 w-5 mr-2"></i>
+                                    ส่งคำขอใบเสนอราคา
+                                </button>
+                                <button type="button" id="clear-form" class="btn btn-outline btn-lg sm:w-auto">
+                                    เคลียร์ฟอร์ม
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <script src="static/js/main.js"></script>
+    <script src="static/js/quote.js"></script>
+</body>
+</html>

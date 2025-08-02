@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บริการ - JLK Transservice</title>
+    <meta name="description" content="บริการโลจิสติกส์ครบวงจร นำเข้า-ส่งออก พิธีการทางศุลกากร และขนส่งสินค้า จาก JLK Transservice" />
+    <meta name="author" content="JLK Transservice" />
+
+    <meta property="og:title" content="บริการ - JLK Transservice" />
+    <meta property="og:description" content="บริการโลจิสติกส์ครบวงจร นำเข้า-ส่งออก พิธีการทางศุลกากร และขนส่งสินค้า จาก JLK Transservice" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/public/og-image.svg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@jlktran" />
+    <meta name="twitter:image" content="/public/og-image.svg" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground">
+    <!-- Include Navbar -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-primary-glow text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                    บริการโลจิสติกส์ครบวงจร
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
+                    ผู้เชี่ยวชาญด้านการส่งออก นำเข้า และพิธีการทางศุลกากร 
+                    ให้บริการครบวงจรด้วยประสบการณ์กว่า 10 ปี
+                </p>
+                <a href="quote.html">
+                    <button class="btn btn-lg bg-secondary hover:bg-secondary/90">
+                        ขอใบเสนอราคา
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Services -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">บริการหลักของเรา</h2>
+                <p class="text-xl text-muted-foreground">
+                    บริการโลจิสติกส์มืออาชีพที่ได้รับการยอมรับในระดับสากล
+                </p>
+            </div>
+
+            <div id="main-services-container" class="space-y-16">
+                <!-- ขนส่งทางเรือ -->
+                <div class="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <div class="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-primary rounded-lg mb-4 md:mb-0">
+                        <i class="fas fa-ship text-white text-3xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-2xl mb-2">ขนส่งทางเรือ</h3>
+                        <p class="text-muted-foreground mb-4">บริการขนส่งสินค้าทางเรือระหว่างประเทศ</p>
+                        <h4 class="font-semibold mb-2">ประโยชน์ที่ได้รับ</h4>
+                        <ul class="list-disc list-inside text-muted-foreground mb-2">
+                            <li>ลดต้นทุนการขนส่ง</li>
+                            <li>ประหยัดเวลา</li>
+                            <li>ลดความเสี่ยง</li>
+                            <li>เพิ่มความน่าเชื่อถือ</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- ขนส่งทางอากาศ -->
+                <div class="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <div class="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-primary rounded-lg mb-4 md:mb-0">
+                        <i class="fas fa-plane text-white text-3xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-2xl mb-2">ขนส่งทางอากาศ</h3>
+                        <p class="text-muted-foreground mb-4">บริการขนส่งสินค้าทางอากาศอย่างรวดเร็ว</p>
+                        <h4 class="font-semibold mb-2">ประโยชน์ที่ได้รับ</h4>
+                        <ul class="list-disc list-inside text-muted-foreground mb-2">
+                            <li>การนำเข้าที่รวดเร็ว</li>
+                            <li>ปลอดภัยและน่าเชื่อถือ</li>
+                            <li>ต้นทุนที่แข่งขันได้</li>
+                            <li>บริการครบวงจร</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- ขนส่งทางบก -->
+                <div class="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <div class="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-primary rounded-lg mb-4 md:mb-0">
+                        <i class="fas fa-truck text-white text-3xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-2xl mb-2">ขนส่งทางบก</h3>
+                        <p class="text-muted-foreground mb-4">บริการขนส่งสินค้าทางถนนทั่วประเทศ</p>
+                        <h4 class="font-semibold mb-2">ประโยชน์ที่ได้รับ</h4>
+                        <ul class="list-disc list-inside text-muted-foreground mb-2">
+                            <li>ครอบคลุมทั่วประเทศ</li>
+                            <li>รวดเร็วและตรงเวลา</li>
+                            <li>ปลอดภัย</li>
+                            <li>ต้นทุนเหมาะสม</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- เพิ่มบริการพิธีการศุลกากร -->
+                <div class="flex flex-col items-center mt-12">
+                    <div class="flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
+                        <i class="fas fa-book text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">พิธีการศุลกากร</h3>
+                    <p class="text-muted-foreground">บริการดำเนินพิธีการศุลกากรนำเข้า-ส่งออกครบวงจร</p>
+                </div>
+                <!-- ปุ่มขอใบเสนอราคา -->
+                <div class="flex justify-center mt-4">
+                    <a href="/quote.html">
+                        <button class="btn btn-lg bg-secondary hover:bg-secondary/90">
+                            ขอใบเสนอราคา
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <script src="static/js/main.js"></script>
+    <script src="static/js/services.js"></script>
+</body>
+</html>
