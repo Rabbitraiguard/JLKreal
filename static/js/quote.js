@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setupForm();
 });
 
-
-
 // Setup form functionality
 function setupForm() {
     const form = document.getElementById('quote-form');
@@ -53,50 +51,94 @@ function handleFormSubmit(event) {
         return;
     }
 
-    // Submit form to backend
-    submitQuoteForm(data);
+    // Generate email and send
+    generateEmailQuote(data);
 }
 
-// Submit form to backend
-function submitQuoteForm(data) {
-    // Show loading state
+// Generate email with quote data
+function generateEmailQuote(data) {
     const submitButton = document.querySelector('button[type="submit"]');
     const originalContent = submitButton.innerHTML;
+    
+    // Show processing state
     submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่ง...';
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังเตรียมอีเมล...';
 
-    // Send to Python backend
-    fetch('/api/quote', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        // Reset button
+    // Create email content
+    const emailSubject = `คำขอใบเสนอราคา - ${data.companyName}`;
+    const emailBody = `
+เรียน JLK Transservice
+
+ข้าพเจ้าต้องการขอใบเสนอราคาสำหรับบริการโลจิสติกส์ โดยมีรายละเอียดดังนี้:
+
+=== ข้อมูลบริษัท ===
+ชื่อบริษัท: ${data.companyName}
+ชื่อผู้ติดต่อ: ${data.contactName}
+อีเมล: ${data.email}
+เบอร์โทรศัพท์: ${data.phone}
+
+=== ข้อมูลบริการ ===
+ประเภทบริการ: ${getServiceTypeName(data.serviceType)}
+ความเร่งด่วน: ${getUrgencyName(data.urgency)}
+จุดต้นทาง: ${data.origin || 'ไม่ระบุ'}
+จุดปลายทาง: ${data.destination || 'ไม่ระบุ'}
+
+=== ข้อมูลสินค้า ===
+ประเภทสินค้า: ${data.cargoType || 'ไม่ระบุ'}
+น้ำหนัก: ${data.weight ? data.weight + ' กก.' : 'ไม่ระบุ'}
+ขนาด: ${data.dimensions || 'ไม่ระบุ'}
+
+=== รายละเอียดเพิ่มเติม ===
+${data.description || 'ไม่มี'}
+
+---
+กรุณาติดต่อกลับที่อีเมลหรือเบอร์โทรศัพท์ข้างต้น
+
+ขอบคุณครับ/ค่ะ
+${data.contactName}
+${data.companyName}
+    `.trim();
+
+    // Create mailto link
+    const mailtoLink = `mailto:jlktransservice@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Reset button after a short delay
+    setTimeout(() => {
         submitButton.disabled = false;
         submitButton.innerHTML = originalContent;
         
-        if (result.success) {
-            showToast(`ส่งคำขอใบเสนอราคาสำเร็จ! รหัสอ้างอิง: #${result.quote_id.toString().padStart(6, '0')} เราจะติดต่อกลับภายใน 24 ชั่วโมง`, 'success');
-            // Clear form after successful submission
-            clearForm();
-        } else {
-            showToast(result.message || 'เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
-        }
+        // Show success message
+        showToast('เปิดโปรแกรมอีเมลสำเร็จ! กรุณาส่งอีเมลเพื่อขอใบเสนอราคา', 'success');
         
-        console.log('Backend response:', result);
-    })
-    .catch(error => {
-        // Reset button
-        submitButton.disabled = false;
-        submitButton.innerHTML = originalContent;
-        
-        console.error('Error:', error);
-        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
-    });
+        // Clear form after successful submission
+        clearForm();
+    }, 1000);
+}
+
+// Helper functions for readable names
+function getServiceTypeName(type) {
+    const serviceTypes = {
+        'export': 'บริการส่งออก',
+        'import': 'บริการนำเข้า', 
+        'customs': 'พิธีการศุลกากร',
+        'domestic': 'ขนส่งภายในประเทศ',
+        'consulting': 'ที่ปรึกษาโลจิสติกส์',
+        'other': 'อื่นๆ'
+    };
+    return serviceTypes[type] || type;
+}
+
+function getUrgencyName(urgency) {
+    const urgencyTypes = {
+        'standard': 'ปกติ (7-14 วัน)',
+        'urgent': 'เร่งด่วน (3-7 วัน)', 
+        'express': 'ด่วนพิเศษ (1-3 วัน)',
+        'same-day': 'ภายในวันเดียว'
+    };
+    return urgencyTypes[urgency] || urgency || 'ไม่ระบุ';
 }
 
 // Clear form function
