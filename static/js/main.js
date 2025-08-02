@@ -482,7 +482,8 @@ function showToast(message, type = 'success') {
 
 // Contact modal functionality
 function showContactModal() {
-    showToast('กรุณาติดต่อเราที่ 0868889745 หรือ jlktransservice@gmail.com', 'success');
+    // Redirect to contact page instead of showing modal
+    window.location.href = 'contact.html';
 }
 
 // Form validation helpers

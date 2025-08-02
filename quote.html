@@ -68,7 +68,11 @@
                         </p>
                     </div>
                     <div class="card-content">
-                        <form id="quote-form" class="space-y-6">
+                        <form id="quote-form" action="https://formspree.io/f/xovlnjoy" method="POST" class="space-y-6">
+                            <!-- Hidden fields for Formspree -->
+                            <input type="hidden" name="_subject" value="คำขอใบเสนอราคา - JLK Transservice">
+                            <input type="hidden" name="_next" value="quote.html?success=1">
+                            <input type="hidden" name="_cc" value="jlktransservice@gmail.com">
                             
                             <!-- ข้อมูลบริษัท -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -289,7 +293,7 @@
                             <div class="flex flex-col sm:flex-row gap-4 pt-6 mobile-stack">
                                 <button type="submit" class="btn btn-secondary btn-lg flex-1 form-submit">
                                     <i class="fas fa-envelope h-5 w-5 mr-2"></i>
-                                    ส่งอีเมลขอใบเสนอราคา
+                                    ส่งคำขอใบเสนอราคา
                                 </button>
                                 <button type="button" id="clear-form" class="btn btn-outline btn-lg sm:w-auto">
                                     <i class="fas fa-eraser h-4 w-4 mr-2"></i>

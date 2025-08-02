@@ -1,20 +1,22 @@
-# JLK Transservice - ระบบใบเสนอราคา
+# JLK Transservice - ระบบใบเสนอราคาและการติดต่อ
 
-ระบบใบเสนอราคาที่เรียบง่าย สำหรับรับคำขอใบเสนอราคาจากลูกค้าและส่งข้อมูลไปยังอีเมลบริษัท
+ระบบใบเสนอราคาและการติดต่อที่เรียบง่าย ใช้ Formspree สำหรับการส่งอีเมลและ Flask สำหรับการจัดการข้อมูล
 
 ## คุณสมบัติ
 
 - ✅ ฟอร์มขอใบเสนอราคาสำหรับลูกค้า
-- ✅ ส่งข้อมูลไปยังอีเมลบริษัทโดยอัตโนมัติ
+- ✅ ฟอร์มติดต่อสำหรับการสื่อสาร
+- ✅ ส่งอีเมลผ่าน Formspree โดยอัตโนมัติ
 - ✅ บันทึกข้อมูลในฐานข้อมูล SQLite
 - ✅ ระบบที่เรียบง่าย ไม่ซับซ้อน
+- ✅ ไม่ต้องตั้งค่า SMTP หรือ email server
 
 ## การตั้งค่าอีเมล
 
-อีเมลได้ตั้งค่าไว้แล้วใน `app.py`:
-- SMTP Server: Gmail (smtp.gmail.com)
+ระบบใช้ Formspree (https://formspree.io) สำหรับการส่งอีเมล:
+- Formspree Endpoint: https://formspree.io/f/xovlnjoy
 - อีเมลปลายทาง: jlktransservice@gmail.com
-- App Password: ตั้งค่าไว้แล้ว
+- ไม่ต้องตั้งค่า SMTP หรือ App Password
 
 ## การติดตั้งและใช้งาน
 
@@ -46,6 +48,7 @@ python app.py
 เปิดเบราว์เซอร์และไปที่:
 - หน้าแรก: http://localhost:5000/
 - ฟอร์มขอใบเสนอราคา: http://localhost:5000/quote.html
+- หน้าติดต่อ: http://localhost:5000/contact.html
 
 ## โครงสร้างไฟล์
 
@@ -54,6 +57,7 @@ python app.py
 ├── requirements.txt    # Dependencies
 ├── index.html         # หน้าแรก
 ├── quote.html         # ฟอร์มขอใบเสนอราคา
+├── contact.html       # หน้าติดต่อ
 ├── services.html      # หน้าบริการ
 ├── about.html         # หน้าเกี่ยวกับเรา
 ├── static/
@@ -65,11 +69,13 @@ python app.py
 
 ## API Endpoints
 
-- `POST /api/quote` - รับข้อมูลใบเสนอราคา
+- `POST /api/quote` - บันทึกข้อมูลใบเสนอราคา
+- `POST /api/contact` - บันทึกข้อความติดต่อ
 - `GET /api/health` - ตรวจสอบสถานะระบบ
 
 ## หมายเหตุ
 
-- ระบบจะส่งอีเมลไปยัง jlktransservice@gmail.com เมื่อมีการขอใบเสนอราคา
-- ข้อมูลจะถูกบันทึกในฐานข้อมูล SQLite
+- ระบบส่งอีเมลผ่าน Formspree ไปยัง jlktransservice@gmail.com
+- ข้อมูลจะถูกบันทึกในฐานข้อมูล SQLite เพื่อการสำรองข้อมูล
 - ระบบทำงานในโหมด development (debug=True)
+- ไม่ต้องตั้งค่า SMTP server หรือ email password
