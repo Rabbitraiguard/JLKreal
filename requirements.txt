@@ -1,5 +1,5 @@
-# JLK Transservice - ระบบใบเสนอราคาและการติดต่อ
-# Required dependencies for the quote system and web application
+# JLK Transservice - Simplified Web Server
+# Required dependencies for the web application (using Formspree for form handling)
 
 # Core web framework
 Flask==2.3.3
@@ -14,20 +14,8 @@ Jinja2==3.1.2
 # Production web server
 gunicorn==21.2.0
 
-# Image processing and file handling
-Pillow==10.0.1
-
-# HTTP requests for external services
-requests==2.31.0
-
 # Note: The following are built-in Python modules and don't need installation:
-# - sqlite3 (database)
 # - json (JSON handling) 
 # - datetime (date/time handling)
 # - logging (logging system)
 # - os (environment variables)
-# - smtplib (email sending)
-# - email (email formatting)
-# - uuid (unique identifiers)
-# - base64 (encoding)
-# - mimetypes (file type detection)

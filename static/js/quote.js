@@ -34,15 +34,22 @@ function setupForm() {
     const clearButton = document.getElementById('clear-form');
 
     if (form) {
-        // Add AJAX form submission
+        // Add form validation before submission
         form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
             if (!validateForm()) {
+                event.preventDefault();
                 return false;
             }
             
-            submitForm();
+            // Show loading state for Formspree submission
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
+            }
+            
+            // Let the form submit naturally to Formspree
+            return true;
         });
     }
 
@@ -198,51 +205,7 @@ function scrollToField(fieldName) {
     }
 }
 
-// Submit form with AJAX and file upload support
-function submitForm() {
-    const form = document.getElementById('quote-form');
-    const submitButton = form.querySelector('button[type="submit"]');
-    
-    // Show loading state
-    if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.classList.add('loading');
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
-    }
-    
-    // Create FormData for file upload
-    const formData = new FormData(form);
-    
-    // Send AJAX request
-    fetch('/api/quote', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast(data.message, 'success');
-            form.reset();
-            removeImagePreview();
-            
-            // Success animation
-            if (submitButton) {
-                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i>ส่งสำเร็จ!';
-                setTimeout(() => {
-                    resetSubmitButton(submitButton);
-                }, 2000);
-            }
-        } else {
-            showToast(data.message, 'error');
-            resetSubmitButton(submitButton);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
-        resetSubmitButton(submitButton);
-    });
-}
+// Note: submitForm function removed - now using direct Formspree submission
 
 // Reset submit button state
 function resetSubmitButton(button) {
