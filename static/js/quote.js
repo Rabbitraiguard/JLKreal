@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupForm();
     setupToastContainer();
     checkForSuccessMessage();
+    initializeAnimations();
+    setupImagePreview();
 });
 
 // Setup toast container if not exists
@@ -32,19 +34,15 @@ function setupForm() {
     const clearButton = document.getElementById('clear-form');
 
     if (form) {
-        // Add basic validation before submission
+        // Add AJAX form submission
         form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
             if (!validateForm()) {
-                event.preventDefault();
                 return false;
             }
             
-            // Show loading state
-            const submitButton = form.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
-            }
+            submitForm();
         });
     }
 
@@ -200,7 +198,210 @@ function scrollToField(fieldName) {
     }
 }
 
+// Submit form with AJAX and file upload support
+function submitForm() {
+    const form = document.getElementById('quote-form');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Show loading state
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('loading');
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
+    }
+    
+    // Create FormData for file upload
+    const formData = new FormData(form);
+    
+    // Send AJAX request
+    fetch('/api/quote', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            form.reset();
+            removeImagePreview();
+            
+            // Success animation
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i>ส่งสำเร็จ!';
+                setTimeout(() => {
+                    resetSubmitButton(submitButton);
+                }, 2000);
+            }
+        } else {
+            showToast(data.message, 'error');
+            resetSubmitButton(submitButton);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
+        resetSubmitButton(submitButton);
+    });
+}
+
+// Reset submit button state
+function resetSubmitButton(button) {
+    if (button) {
+        button.disabled = false;
+        button.classList.remove('loading');
+        button.innerHTML = '<i class="fas fa-envelope h-5 w-5 mr-2"></i>ส่งคำขอใบเสนอราคา';
+    }
+}
+
+// Initialize page animations
+function initializeAnimations() {
+    // Add animation class to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.classList.add('quote-card-enter');
+    });
+    
+    // Add pulse effect to quote button
+    const quoteButton = document.querySelector('.btn-secondary');
+    if (quoteButton) {
+        quoteButton.classList.add('pulse-glow');
+    }
+    
+    // Stagger form field animations on page load
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+        group.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+// Setup image preview functionality
+function setupImagePreview() {
+    const fileInput = document.getElementById('attachment');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleImageSelect);
+    }
+}
+
+// Handle image selection and preview
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('ไฟล์รูปภาพใหญ่เกินไป (สูงสุด 5MB)', 'error');
+            event.target.value = '';
+            return;
+        }
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            showToast('รูปแบบไฟล์ไม่ถูกต้อง (รองรับเฉพาะ jpg, png, gif, webp)', 'error');
+            event.target.value = '';
+            return;
+        }
+        
+        // Create image preview
+        createImagePreview(file);
+    }
+}
+
+// Create image preview
+function createImagePreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // Remove existing preview
+        removeImagePreview();
+        
+        // Create preview container
+        const previewContainer = document.createElement('div');
+        previewContainer.id = 'image-preview';
+        previewContainer.className = 'image-preview-container mt-3 p-3 border rounded-lg bg-gray-50';
+        
+        previewContainer.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-gray-700">ตัวอย่างรูปภาพ:</span>
+                <button type="button" onclick="removeImagePreview()" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="text-center">
+                <img src="${e.target.result}" alt="Preview" class="max-w-full h-auto max-h-48 rounded-lg shadow-md">
+                <p class="text-xs text-gray-500 mt-2">${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</p>
+            </div>
+        `;
+        
+        // Insert after file input
+        const fileInput = document.getElementById('attachment');
+        fileInput.parentNode.insertBefore(previewContainer, fileInput.nextSibling);
+        
+        // Add slide-in animation
+        setTimeout(() => {
+            previewContainer.style.opacity = '0';
+            previewContainer.style.transform = 'translateY(-10px)';
+            previewContainer.style.transition = 'all 0.3s ease';
+            previewContainer.style.opacity = '1';
+            previewContainer.style.transform = 'translateY(0)';
+        }, 10);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Remove image preview
+function removeImagePreview() {
+    const existingPreview = document.getElementById('image-preview');
+    if (existingPreview) {
+        existingPreview.style.transition = 'all 0.3s ease';
+        existingPreview.style.opacity = '0';
+        existingPreview.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            existingPreview.remove();
+        }, 300);
+    }
+}
+
+// Enhanced clear form function
+function clearForm() {
+    const form = document.getElementById('quote-form');
+    if (form) {
+        form.reset();
+        removeImagePreview();
+        showToast('เคลียร์ฟอร์มเรียบร้อย', 'success');
+        
+        // Reset any error states
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.classList.remove('error');
+        });
+    }
+}
+
+// Add CSS for image preview
+const style = document.createElement('style');
+style.textContent = `
+    .image-preview-container {
+        background: linear-gradient(135deg, #f8f9ff, #f1f5f9);
+        border: 2px dashed hsl(var(--primary) / 0.3);
+        animation: slideInUp 0.3s ease-out;
+    }
+    
+    .image-preview-container img {
+        transition: transform 0.3s ease;
+    }
+    
+    .image-preview-container img:hover {
+        transform: scale(1.05);
+    }
+    
+    .form-input.error, .form-select.error, .form-textarea.error {
+        border-color: hsl(var(--destructive));
+        box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.1);
+    }
+`;
+document.head.appendChild(style);
+
 // Export functions for global use
 window.clearForm = clearForm;
 window.validateEmail = validateEmail;
 window.validatePhone = validatePhone;
+window.removeImagePreview = removeImagePreview;

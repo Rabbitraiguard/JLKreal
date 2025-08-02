@@ -43,7 +43,7 @@
     </section>
 
     <!-- เนื้อหาหลัก -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mobile-responsive-container">
         <div class="bg-white/50 backdrop-blur-sm rounded-xl p-2 mb-8">
             <div class="text-center p-6">
                 <div class="text-sm text-muted-foreground mb-3">
@@ -68,11 +68,7 @@
                         </p>
                     </div>
                     <div class="card-content">
-                        <form id="quote-form" action="https://formspree.io/f/xovlnjoy" method="POST" class="space-y-6">
-                            <!-- Hidden fields for Formspree -->
-                            <input type="hidden" name="_subject" value="คำขอใบเสนอราคา - JLK Transservice">
-                            <input type="hidden" name="_next" value="quote.html?success=1">
-                            <input type="hidden" name="_cc" value="jlktransservice@gmail.com">
+                        <form id="quote-form" action="/api/quote" method="POST" enctype="multipart/form-data" class="space-y-6">
                             
                             <!-- ข้อมูลบริษัท -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
