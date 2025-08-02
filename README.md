@@ -1,22 +1,24 @@
 # JLK Transservice - ระบบใบเสนอราคาและการติดต่อ
 
-ระบบเว็บไซต์โลจิสติกส์ที่เรียบง่าย ใช้ Formspree สำหรับการส่งอีเมลและ Flask สำหรับการเสิร์ฟเว็บไซต์
+ระบบเว็บไซต์โลจิสติกส์ที่เรียบง่าย ใช้ EmailJS สำหรับการส่งอีเมลและ Flask สำหรับการเสิร์ฟเว็บไซต์
 
 ## คุณสมบัติ
 
 - ✅ ฟอร์มขอใบเสนอราคาสำหรับลูกค้า
 - ✅ ฟอร์มติดต่อสำหรับการสื่อสาร
-- ✅ ส่งอีเมลผ่าน Formspree โดยอัตโนมัติ
+- ✅ ส่งอีเมลผ่าน EmailJS โดยอัตโนมัติ
 - ✅ รองรับการอัปโหลดรูปภาพ
 - ✅ ระบบที่เรียบง่าย ไม่ซับซ้อน
 - ✅ ไม่ต้องตั้งค่า SMTP หรือ email server
 
 ## การตั้งค่าอีเมล
 
-ระบบใช้ Formspree (https://formspree.io) สำหรับการส่งอีเมล:
-- Formspree Endpoint: https://formspree.io/f/mzzvaepv
+ระบบใช้ EmailJS (https://emailjs.com) สำหรับการส่งอีเมล:
+- EmailJS Public Key: MQj01V11zBf3edqLX
+- EmailJS Private Key: OtbWFwTYDuv3AZHk2-pdm
 - อีเมลปลายทาง: jlktransservice@gmail.com
 - ไม่ต้องตั้งค่า SMTP หรือ App Password
+- ดูรายละเอียดการตั้งค่าใน `EMAILJS_SETUP.md`
 
 ## การติดตั้งและใช้งาน
 
