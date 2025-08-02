@@ -35,7 +35,7 @@
                     ขอใบเสนอราคา
                 </h1>
                 <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
-                    กรอกข้อมูลเพื่อรับใบเสนอราคาที่เหมาะสมกับความต้องการของคุณ
+                    กรอกข้อมูลเพื่อส่งคำขอใบเสนอราคาผ่านอีเมล
                     เราจะติดต่อกลับภายใน 24 ชั่วโมง
                 </p>
             </div>
@@ -288,8 +288,8 @@
                             <!-- ปุ่มส่ง -->
                             <div class="flex flex-col sm:flex-row gap-4 pt-6 mobile-stack">
                                 <button type="submit" class="btn btn-secondary btn-lg flex-1 form-submit">
-                                    <i class="fas fa-file-text h-5 w-5 mr-2"></i>
-                                    ส่งคำขอใบเสนอราคา
+                                    <i class="fas fa-envelope h-5 w-5 mr-2"></i>
+                                    ส่งอีเมลขอใบเสนอราคา
                                 </button>
                                 <button type="button" id="clear-form" class="btn btn-outline btn-lg sm:w-auto">
                                     <i class="fas fa-eraser h-4 w-4 mr-2"></i>
@@ -305,6 +305,9 @@
 
     <!-- Include Footer -->
     <div id="footer-container"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <script src="static/js/main.js"></script>
     <script src="static/js/quote.js"></script>
