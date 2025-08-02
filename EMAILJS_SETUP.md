@@ -16,7 +16,7 @@ You need to create an email service in EmailJS dashboard:
 1. Go to **Email Services** section
 2. Click **Add New Service**
 3. Choose **Gmail** (or your preferred email provider)
-4. Set Service ID as: `default_service`
+4. Set Service ID as: `service_9r7kks9` (หรือใช้ Service ID ที่มีอยู่แล้ว)
 5. Connect your Gmail account (jlktransservice@gmail.com)
 
 ### 3. Email Templates Setup
@@ -100,7 +100,7 @@ If you use different Service ID or Template IDs, update them in `static/js/email
 const EMAILJS_CONFIG = {
     publicKey: 'MQj01V11zBf3edqLX',
     privateKey: 'OtbWFwTYDuv3AZHk2-pdm',
-    serviceId: 'your_service_id', // Update this
+    serviceId: 'service_9r7kks9', // Already updated
     contactTemplateId: 'your_contact_template_id', // Update this
     quoteTemplateId: 'your_quote_template_id' // Update this
 };

@@ -7,7 +7,7 @@
 const EMAILJS_CONFIG = {
     publicKey: 'MQj01V11zBf3edqLX',
     privateKey: 'OtbWFwTYDuv3AZHk2-pdm',
-    serviceId: 'default_service', // You'll need to set this up in EmailJS dashboard
+    serviceId: 'service_9r7kks9', // Updated with correct service ID
     contactTemplateId: 'template_contact', // You'll need to create this template
     quoteTemplateId: 'template_quote' // You'll need to create this template
 };
