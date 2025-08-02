@@ -1,82 +1,75 @@
-# JLK Transservice Website
+# JLK Transservice - ระบบใบเสนอราคา
 
-ระบบเว็บไซต์สำหรับบริษัท JLK Transservice ให้บริการโลจิสติกส์ครบวงจร
-
-## โครงสร้างเว็บไซต์
-
-เว็บไซต์นี้ใช้เทคโนโลยี **HTML/CSS/JavaScript** แบบ Static ไม่ต้องพึ่งพา React หรือ Node.js
-
-### ไฟล์หลัก
-
-- `index.html` - หน้าแรก (Homepage)
-- `about.html` - หน้าเกี่ยวกับเรา
-- `services.html` - หน้าบริการ  
-- `quote.html` - หน้าขอใบเสนอราคา
-- `404.html` - หน้า Error 404
-
-### โครงสร้างโฟลเดอร์
-
-```
-/
-├── index.html          # หน้าแรก
-├── about.html          # เกี่ยวกับเรา
-├── services.html       # บริการ
-├── quote.html          # ขอใบเสนอราคา
-├── 404.html           # หน้า Error
-├── static/            # ไฟล์ Static
-│   ├── css/
-│   │   └── style.css  # CSS หลัก
-│   ├── js/
-│   │   ├── main.js    # JavaScript หลัก
-│   │   ├── about.js   # Script สำหรับหน้า About
-│   │   ├── services.js # Script สำหรับหน้า Services
-│   │   └── quote.js   # Script สำหรับหน้า Quote
-│   └── images/        # รูปภาพ
-└── app.py            # Python Flask server (สำหรับฟอร์ม)
-```
-
-## การเปิดเว็บไซต์
-
-### วิธีที่ 1: เปิดไฟล์โดยตรง
-เปิดไฟล์ `index.html` ใน Browser โดยตรง
-
-### วิธีที่ 2: ใช้ HTTP Server
-```bash
-# Python 3
-python3 -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
-
-# Node.js (ถ้ามี)
-npx serve .
-```
-
-จากนั้นเปิด http://localhost:8000
+ระบบใบเสนอราคาที่เรียบง่าย สำหรับรับคำขอใบเสนอราคาจากลูกค้าและส่งข้อมูลไปยังอีเมลบริษัท
 
 ## คุณสมบัติ
 
-- ✅ **ไม่มี White Screen** - ใช้ HTML/CSS/JS แบบ Static
-- ✅ **การนำทางที่เสถียร** - ไม่มีปัญหา routing
-- ✅ **ง่ายต่อการแก้ไข** - ไม่ต้องใช้ build process
-- ✅ **รองรับ Mobile** - Responsive design ด้วย Tailwind CSS
-- ✅ **รวดเร็ว** - โหลดเร็วไม่ต้องรอ JavaScript compilation
+- ✅ ฟอร์มขอใบเสนอราคาสำหรับลูกค้า
+- ✅ ส่งข้อมูลไปยังอีเมลบริษัทโดยอัตโนมัติ
+- ✅ บันทึกข้อมูลในฐานข้อมูล SQLite
+- ✅ ระบบที่เรียบง่าย ไม่ซับซ้อน
 
-## การแก้ไข
+## การตั้งค่าอีเมล
 
-1. **แก้ไขเนื้อหา**: แก้ไขในไฟล์ `.html` โดยตรง
-2. **แก้ไขสไตล์**: แก้ไขใน `static/css/style.css`
-3. **แก้ไขฟังก์ชัน**: แก้ไขใน `static/js/main.js` หรือไฟล์ JS ที่เกี่ยวข้อง
+อีเมลได้ตั้งค่าไว้แล้วใน `app.py`:
+- SMTP Server: Gmail (smtp.gmail.com)
+- อีเมลปลายทาง: jlktransservice@gmail.com
+- App Password: ตั้งค่าไว้แล้ว
 
-## เทคโนโลยีที่ใช้
+## การติดตั้งและใช้งาน
 
-- **HTML5** - โครงสร้างหน้าเว็บ
-- **CSS3** - การจัดแต่งหน้าตา
-- **JavaScript (Vanilla)** - ฟังก์ชันการทำงาน
-- **Tailwind CSS** - Framework สำหรับ CSS
-- **Font Awesome** - ไอคอน
-- **Python Flask** - Backend สำหรับฟอร์ม (เฉพาะ app.py)
+### 1. ติดตั้ง Dependencies
 
-## การติดต่อ
+```bash
+# สร้าง virtual environment
+python3 -m venv venv
 
-หากมีปัญหาหรือต้องการแก้ไขเพิ่มเติม สามารถติดต่อทีมพัฒนาได้
+# เปิดใช้งาน virtual environment
+source venv/bin/activate
+
+# ติดตั้ง packages
+pip install -r requirements.txt
+```
+
+### 2. รันระบบ
+
+```bash
+# เปิดใช้งาน virtual environment (ถ้ายังไม่ได้เปิด)
+source venv/bin/activate
+
+# รันแอปพลิเคชัน
+python app.py
+```
+
+### 3. เข้าใช้งาน
+
+เปิดเบราว์เซอร์และไปที่:
+- หน้าแรก: http://localhost:5000/
+- ฟอร์มขอใบเสนอราคา: http://localhost:5000/quote.html
+
+## โครงสร้างไฟล์
+
+```
+├── app.py              # แอปพลิเคชันหลัก Flask
+├── requirements.txt    # Dependencies
+├── index.html         # หน้าแรก
+├── quote.html         # ฟอร์มขอใบเสนอราคา
+├── services.html      # หน้าบริการ
+├── about.html         # หน้าเกี่ยวกับเรา
+├── static/
+│   ├── css/           # ไฟล์ CSS
+│   └── js/            # ไฟล์ JavaScript
+└── jlktran.db         # ฐานข้อมูล SQLite
+
+```
+
+## API Endpoints
+
+- `POST /api/quote` - รับข้อมูลใบเสนอราคา
+- `GET /api/health` - ตรวจสอบสถานะระบบ
+
+## หมายเหตุ
+
+- ระบบจะส่งอีเมลไปยัง jlktransservice@gmail.com เมื่อมีการขอใบเสนอราคา
+- ข้อมูลจะถูกบันทึกในฐานข้อมูล SQLite
+- ระบบทำงานในโหมด development (debug=True)

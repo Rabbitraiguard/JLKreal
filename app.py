@@ -21,10 +21,7 @@ import json
 import datetime
 import os
 import logging
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
 
 # Initialize Flask application
 app = Flask(__name__, static_folder='static', template_folder='.')
@@ -37,14 +34,14 @@ logger = logging.getLogger(__name__)
 # Database configuration
 DATABASE = 'jlktran.db'
 
-# Email configuration (configure these with your actual email settings)
+# Email configuration
 EMAIL_CONFIG = {
     'smtp_server': 'smtp.gmail.com',
     'smtp_port': 587,
     'username': 'jlktransservice@gmail.com',  # Main company email
-    'password': os.environ.get('EMAIL_PASSWORD', 'your-app-password'),  # Set via environment variable
+    'password': 'beqt ktlo lqje qpgj',  # App password
     'from_email': 'jlktransservice@gmail.com',
-    'company_emails': ['jlktransservice@gmail.com', 'meowkumaxd@gmail.com']  # Target emails
+    'company_emails': ['jlktransservice@gmail.com']  # Target email
 }
 
 def init_database():
@@ -74,19 +71,7 @@ def init_database():
         )
     ''')
     
-    # Create contacts table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS contacts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            phone TEXT,
-            subject TEXT,
-            message TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            status TEXT DEFAULT 'new'
-        )
-    ''')
+
     
     conn.commit()
     conn.close()
@@ -184,63 +169,7 @@ def submit_quote():
         conn.commit()
         conn.close()
         
-        # Send confirmation email to customer
-        customer_email_html = f'''
-        <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background-color: #1e40af; color: white; padding: 20px; text-align: center;">
-                    <h1>JLK Transservice</h1>
-                    <h2>ขอบคุณสำหรับการขอใบเสนอราคา</h2>
-                </div>
-                
-                <div style="padding: 20px; background-color: #f8fafc;">
-                    <p>เรียน คุณ{data['contactName']}</p>
-                    
-                    <p>ขอบคุณที่ให้ความสนใจบริการของ JLK Transservice</p>
-                    
-                    <p>เราได้รับคำขอใบเสนอราคาของท่านแล้ว (รหัสอ้างอิง: <strong>#{quote_id:06d}</strong>)</p>
-                    
-                    <div style="background-color: white; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
-                        <h3>รายละเอียดคำขอ:</h3>
-                        <ul>
-                            <li><strong>บริษัท:</strong> {data['companyName']}</li>
-                            <li><strong>ประเภทบริการ:</strong> {data['serviceType']}</li>
-                            <li><strong>ผู้ติดต่อ:</strong> {data['contactName']}</li>
-                            <li><strong>อีเมล:</strong> {data['email']}</li>
-                            <li><strong>โทรศัพท์:</strong> {data['phone']}</li>
-                        </ul>
-                    </div>
-                    
-                    <p><strong>ขั้นตอนต่อไป:</strong></p>
-                    <ol>
-                        <li>ทีมของเราจะศึกษาข้อมูลและความต้องการของท่าน</li>
-                        <li>เราจะติดต่อกลับภายใน 24 ชั่วโมง</li>
-                        <li>นำเสนอใบเสนอราคาที่เหมาะสมกับความต้องการ</li>
-                    </ol>
-                    
-                    <div style="background-color: #e0f2fe; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                        <p><strong>ติดต่อเรา:</strong></p>
-                        <p>📞 02-123-4567<br>
-                        📧 info@jlktran.com<br>
-                        🕐 จันทร์-ศุกร์ 8:00-18:00 น.</p>
-                    </div>
-                    
-                    <p>ขอบคุณที่ไว้วางใจ JLK Transservice</p>
-                    
-                    <p>ด้วยความเคารพ<br>
-                    ทีม JLK Transservice</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        '''
-        
-        send_email(
-            data['email'],
-            f'ขอบคุณสำหรับการขอใบเสนอราคา - JLK Transservice #{quote_id:06d}',
-            customer_email_html
-        )
+
         
         # Send notification to company emails
         company_email_html = f'''
@@ -296,13 +225,12 @@ def submit_quote():
         </html>
         '''
         
-        # Send to both company emails
-        for email in EMAIL_CONFIG['company_emails']:
-            send_email(
-                email,
-                f'🔔 คำขอใบเสนอราคาใหม่ #{quote_id:06d} - {data["companyName"]}',
-                company_email_html
-            )
+        # Send to company email
+        send_email(
+            EMAIL_CONFIG['company_emails'][0],
+            f'🔔 คำขอใบเสนอราคาใหม่ #{quote_id:06d} - {data["companyName"]}',
+            company_email_html
+        )
         
         return jsonify({
             'success': True,
@@ -317,145 +245,9 @@ def submit_quote():
             'message': 'เกิดข้อผิดพลาดในการส่งข้อมูล'
         }), 500
 
-@app.route('/api/contact', methods=['POST'])
-def submit_contact():
-    """Handle contact form submission"""
-    try:
-        data = request.get_json()
-        
-        # Validate required fields
-        required_fields = ['name', 'email', 'message']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({
-                    'success': False,
-                    'message': f'กรุณากรอก {field} ให้ครบถ้วน'
-                }), 400
-        
-        # Insert into database
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            INSERT INTO contacts (name, email, phone, subject, message)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (
-            data['name'],
-            data['email'],
-            data.get('phone', ''),
-            data.get('subject', ''),
-            data['message']
-        ))
-        
-        contact_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-        
-        # Send confirmation email
-        customer_email_html = f'''
-        <html>
-        <body style="font-family: Arial, sans-serif;">
-            <h2>ขอบคุณที่ติดต่อ JLK Transservice</h2>
-            <p>เรียน คุณ{data['name']}</p>
-            <p>เราได้รับข้อความของท่านแล้ว เราจะติดต่อกลับโดยเร็วที่สุด</p>
-            <p>รหัสอ้างอิง: #{contact_id:06d}</p>
-            <p>ขอบคุณครับ</p>
-        </body>
-        </html>
-        '''
-        
-        send_email(
-            data['email'],
-            f'ขอบคุณที่ติดต่อ JLK Transservice #{contact_id:06d}',
-            customer_email_html
-        )
-        
-        return jsonify({
-            'success': True,
-            'message': 'ส่งข้อความสำเร็จ',
-            'contact_id': contact_id
-        })
-        
-    except Exception as e:
-        logger.error(f"Error submitting contact: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': 'เกิดข้อผิดพลาดในการส่งข้อมูล'
-        }), 500
 
-@app.route('/api/quotes', methods=['GET'])
-def get_quotes():
-    """Get all quotes (admin endpoint)"""
-    try:
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT * FROM quotes ORDER BY created_at DESC
-        ''')
-        
-        rows = cursor.fetchall()
-        conn.close()
-        
-        # Convert to list of dictionaries
-        quotes = []
-        columns = [desc[0] for desc in cursor.description]
-        for row in rows:
-            quote = dict(zip(columns, row))
-            # Parse additional services JSON
-            if quote['additional_services']:
-                try:
-                    quote['additional_services'] = json.loads(quote['additional_services'])
-                except:
-                    quote['additional_services'] = []
-            quotes.append(quote)
-        
-        return jsonify({
-            'success': True,
-            'quotes': quotes
-        })
-        
-    except Exception as e:
-        logger.error(f"Error getting quotes: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': 'เกิดข้อผิดพลาดในการดึงข้อมูล'
-        }), 500
 
-@app.route('/api/quotes/<int:quote_id>/status', methods=['PUT'])
-def update_quote_status(quote_id):
-    """Update quote status"""
-    try:
-        data = request.get_json()
-        status = data.get('status')
-        
-        if status not in ['pending', 'processing', 'quoted', 'completed', 'cancelled']:
-            return jsonify({
-                'success': False,
-                'message': 'สถานะไม่ถูกต้อง'
-            }), 400
-        
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            UPDATE quotes SET status = ? WHERE id = ?
-        ''', (status, quote_id))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({
-            'success': True,
-            'message': 'อัปเดตสถานะสำเร็จ'
-        })
-        
-    except Exception as e:
-        logger.error(f"Error updating quote status: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': 'เกิดข้อผิดพลาดในการอัปเดต'
-        }), 500
+
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -466,103 +258,7 @@ def health_check():
         'service': 'JLK Transservice Backend'
     })
 
-@app.route('/api/admin/email-layout', methods=['GET', 'POST'])
-def manage_email_layout():
-    """Manage email layout configuration"""
-    if request.method == 'GET':
-        # Return current email layout configuration
-        # In a real app, this would be stored in database
-        default_layout = [
-            {'id': 'customer_info', 'label': '📋 ข้อมูลลูกค้า', 'enabled': True, 'order': 0},
-            {'id': 'service_info', 'label': '🚚 รายละเอียดบริการ', 'enabled': True, 'order': 1},
-            {'id': 'cargo_info', 'label': '📦 ข้อมูลสินค้า', 'enabled': True, 'order': 2},
-            {'id': 'additional_info', 'label': '📝 รายละเอียดเพิ่มเติม', 'enabled': True, 'order': 3},
-            {'id': 'urgency_info', 'label': '⏰ ความเร่งด่วน', 'enabled': True, 'order': 4}
-        ]
-        
-        return jsonify({
-            'success': True,
-            'layout': default_layout
-        })
-    
-    elif request.method == 'POST':
-        # Save email layout configuration
-        data = request.get_json()
-        layout = data.get('layout', [])
-        
-        # In a real app, save to database
-        # For now, just return success
-        
-        return jsonify({
-            'success': True,
-            'message': 'บันทึกการจัดเรียงอีเมลสำเร็จ'
-        })
 
-@app.route('/api/admin/email-settings', methods=['GET', 'POST'])
-def manage_email_settings():
-    """Manage email settings"""
-    if request.method == 'GET':
-        return jsonify({
-            'success': True,
-            'settings': {
-                'company_emails': EMAIL_CONFIG['company_emails'],
-                'email_subject': '🔔 คำขอใบเสนอราคาใหม่ #{quote_id} - {company_name}'
-            }
-        })
-    
-    elif request.method == 'POST':
-        data = request.get_json()
-        
-        # Update email configuration
-        if 'company_emails' in data:
-            EMAIL_CONFIG['company_emails'] = data['company_emails']
-        
-        return jsonify({
-            'success': True,
-            'message': 'บันทึกการตั้งค่าอีเมลสำเร็จ'
-        })
-
-@app.route('/api/admin/test-email', methods=['POST'])
-def test_email():
-    """Send test email"""
-    try:
-        data = request.get_json()
-        test_email_address = data.get('email', EMAIL_CONFIG['company_emails'][0])
-        
-        test_html = '''
-        <html>
-        <body style="font-family: Arial, sans-serif;">
-            <h2>🧪 ทดสอบระบบอีเมล JLK Transservice</h2>
-            <p>นี่คือการทดสอบระบบส่งอีเมลของ JLK Transservice</p>
-            <p><strong>เวลาส่ง:</strong> {timestamp}</p>
-            <p>หากคุณได้รับอีเมลนี้ แสดงว่าระบบทำงานปกติ ✅</p>
-        </body>
-        </html>
-        '''.format(timestamp=datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-        
-        success = send_email(
-            test_email_address,
-            '🧪 ทดสอบระบบอีเมล - JLK Transservice',
-            test_html
-        )
-        
-        if success:
-            return jsonify({
-                'success': True,
-                'message': f'ส่งอีเมลทดสอบไปยัง {test_email_address} สำเร็จ'
-            })
-        else:
-            return jsonify({
-                'success': False,
-                'message': 'ไม่สามารถส่งอีเมลทดสอบได้'
-            }), 500
-            
-    except Exception as e:
-        logger.error(f"Error sending test email: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': 'เกิดข้อผิดพลาดในการส่งอีเมลทดสอบ'
-        }), 500
 
 @app.errorhandler(404)
 def not_found(error):
@@ -590,6 +286,5 @@ if __name__ == '__main__':
     print("   - About: http://localhost:5000/about.html")
     print("   - Quote: http://localhost:5000/quote.html")
     print("   - API Health: http://localhost:5000/api/health")
-    print("   - API Quotes: http://localhost:5000/api/quotes")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
