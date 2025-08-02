@@ -34,9 +34,23 @@ function setupForm() {
     const clearButton = document.getElementById('clear-form');
 
     if (form) {
-        // Remove old form submission handler since EmailJS handler will take over
-        // The EmailJS handler is loaded after this script and will handle submission
-        console.log('Quote form found, EmailJS handler will manage submissions');
+        // Add form validation before submission
+        form.addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Show loading state for Formspree submission
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งคำขอ...';
+            }
+            
+            // Let the form submit naturally to Formspree
+            return true;
+        });
     }
 
     if (clearButton) {
