@@ -47,6 +47,45 @@
     --radius: 0.5rem;
 }
 
+/* Admin Panel Styles */
+.nav-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-left;
+    color: hsl(var(--muted-foreground));
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    transition: var(--transition-smooth);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background-color: hsl(var(--muted));
+    color: hsl(var(--foreground));
+}
+
+.nav-item.active {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+.nav-item.active:hover {
+    background-color: hsl(var(--primary));
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
 .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
